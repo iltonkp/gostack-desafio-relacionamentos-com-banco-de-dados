@@ -13,9 +13,9 @@ describe('App', () => {
   beforeAll(async () => {
     connection = await createConnection('test-connection');
 
-    await connection.query('DROP TABLE IF EXISTS orders_products');
-    await connection.query('DROP TABLE IF EXISTS orders');
-    await connection.query('DROP TABLE IF EXISTS products');
+    // await connection.query('DROP TABLE IF EXISTS orders_products');
+    // await connection.query('DROP TABLE IF EXISTS orders');
+    // await connection.query('DROP TABLE IF EXISTS products');
     await connection.query('DROP TABLE IF EXISTS customers');
     await connection.query('DROP TABLE IF EXISTS migrations');
 
@@ -23,9 +23,9 @@ describe('App', () => {
   });
 
   beforeEach(async () => {
-    await connection.query('DELETE FROM orders_products');
-    await connection.query('DELETE FROM orders');
-    await connection.query('DELETE FROM products');
+    // await connection.query('DELETE FROM orders_products');
+    // await connection.query('DELETE FROM orders');
+    // await connection.query('DELETE FROM products');
     await connection.query('DELETE FROM customers');
   });
 

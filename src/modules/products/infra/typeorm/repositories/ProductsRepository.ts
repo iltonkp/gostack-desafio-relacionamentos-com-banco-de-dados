@@ -12,6 +12,8 @@ interface IFindProducts {
 class ProductsRepository implements IProductsRepository {
   private ormRepository: Repository<Product>;
 
+  private products: Product[] = [];
+
   constructor() {
     this.ormRepository = getRepository(Product);
   }
@@ -22,20 +24,23 @@ class ProductsRepository implements IProductsRepository {
     quantity,
   }: ICreateProductDTO): Promise<Product> {
     // TODO
+
+    const product = new Product();
+    return product;
   }
 
   public async findByName(name: string): Promise<Product | undefined> {
-    // TODO
+    return undefined;
   }
 
   public async findAllById(products: IFindProducts[]): Promise<Product[]> {
-    // TODO
+    return this.products;
   }
 
   public async updateQuantity(
     products: IUpdateProductsQuantityDTO[],
   ): Promise<Product[]> {
-    // TODO
+    return this.products;
   }
 }
 
