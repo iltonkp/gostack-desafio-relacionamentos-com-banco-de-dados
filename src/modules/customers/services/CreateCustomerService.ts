@@ -18,7 +18,18 @@ class CreateCustomerService {
   ) {}
 
   public async execute({ name, email }: IRequest): Promise<Customer> {
-    // TODO
+    const existCustumer = await this.customersRepository.findByEmail(email);
+
+    if (existCustumer) {
+      throw new AppError('Email já cadastrado');
+    }
+
+    const custumer = await this.customersRepository.create({
+      name,
+      email,
+    });
+
+    return custumer;
   }
 }
 
