@@ -29,7 +29,47 @@ class CreateOrderService {
   ) {}
 
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    const order = new Order();
+    const customer = await this.customersRepository.findById(customer_id);
+    if (!customer) {
+      throw new AppError('Cliente inexistente');
+    }
+
+    const findProducts = await this.productsRepository.findAllById(products);
+
+    if (!findProducts) {
+      throw new AppError('Produto inexistente');
+    }
+
+    const verifyStock = products.every(product => {
+      const findProduct = findProducts.find(
+        productStore => productStore.id === product.id,
+      );
+      return product.quantity < (findProduct?.quantity || 0);
+    });
+
+    if (!verifyStock) {
+      throw new AppError('Estoque insuficiente');
+    }
+
+    const orderProducts = products.map(product => {
+      const findProduct = findProducts.find(
+        productStore => productStore.id === product.id,
+      );
+
+      return {
+        product_id: product.id,
+        quantity: product.quantity,
+        price: findProduct?.price || 0,
+      };
+    });
+
+    const order = await this.ordersRepository.create({
+      customer,
+      products: orderProducts,
+    });
+
+    await this.productsRepository.updateQuantity(products);
+
     return order;
   }
 }

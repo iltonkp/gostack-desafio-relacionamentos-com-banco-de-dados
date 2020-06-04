@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Column,
   OneToOne,
   JoinColumn,
   OneToMany,
@@ -17,14 +16,14 @@ class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  customer_id: number;
-
   @OneToOne(() => Customer)
   @JoinColumn({ name: 'customer_id' })
   customer: Customer;
 
-  @OneToMany(() => OrdersProducts, order_products => order_products.product)
+  @OneToMany(() => OrdersProducts, order_products => order_products.order, {
+    cascade: true,
+  })
+  @JoinColumn()
   order_products: OrdersProducts[];
 
   @CreateDateColumn()

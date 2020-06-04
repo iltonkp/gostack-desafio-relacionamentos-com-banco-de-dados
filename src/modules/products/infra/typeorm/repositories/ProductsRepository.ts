@@ -12,8 +12,6 @@ interface IFindProducts {
 class ProductsRepository implements IProductsRepository {
   private ormRepository: Repository<Product>;
 
-  private products: Product[] = [];
-
   constructor() {
     this.ormRepository = getRepository(Product);
   }
@@ -44,13 +42,43 @@ class ProductsRepository implements IProductsRepository {
   }
 
   public async findAllById(products: IFindProducts[]): Promise<Product[]> {
-    return this.products;
+    const ids = products.map(product => {
+      return product.id;
+    });
+
+    const findProducts = await this.ormRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+    return findProducts;
   }
 
   public async updateQuantity(
     products: IUpdateProductsQuantityDTO[],
   ): Promise<Product[]> {
-    return this.products;
+    const productIds = products.map(product => product.id);
+
+    const findProducts = await this.ormRepository.find({
+      where: {
+        id: In(productIds),
+      },
+    });
+
+    const updatedProducts = findProducts.map(storedProduct => {
+      const findedProduct = products.find(
+        product => product.id === storedProduct.id,
+      );
+
+      const quantity = findedProduct?.quantity || 0;
+
+      return {
+        ...storedProduct,
+        quantity: storedProduct.quantity - quantity,
+      };
+    });
+
+    return this.ormRepository.save(updatedProducts);
   }
 }
 
